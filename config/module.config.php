@@ -12,7 +12,9 @@ return array(
                 'neutral'=>'user',
             ),
         ),
-        'auth_service' => 'zfcuser_auth_service',
+        'auth_service'  => 'zfcuser_auth_service',
+        'user_entity'   => 'KryuuAccount\Entity\User',
+        'role_entity'   => 'KryuuAccount\Entity\Role',
     ),
     
     'controllers' => array(
