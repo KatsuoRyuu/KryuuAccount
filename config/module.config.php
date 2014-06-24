@@ -22,7 +22,6 @@ return array(
             'zfcuser' => 'KryuuAccount\Controller\AccountController',
             'KryuuAccount\Account'=> 'KryuuAccount\Controller\AccountController',
             'KryuuAccount\Password' => 'KryuuAccount\Controller\PasswordController',
-            'KryuuAccount\Activation' => 'KryuuAccount\Controller\ActivationController',
         ),
     ),
 
