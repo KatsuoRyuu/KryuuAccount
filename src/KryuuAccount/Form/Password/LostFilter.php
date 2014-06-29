@@ -1,13 +1,13 @@
 <?php
 
-namespace KryuuAccount\InputFilter\Password;
+namespace KryuuAccount\Form\Password;
 
 use Zend\Filter;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
-class Lost implements InputFilterAwareInterface
+class LostFilter implements InputFilterAwareInterface
 {
 	
 	protected $inputFilter;

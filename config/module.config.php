@@ -4,7 +4,7 @@ namespace KryuuAccount;
 
 return array(
     __NAMESPACE__ => array(
-        'mailer' => array( 'Technocal Support' => 'spawn-technocalsupport@drake-development.org' ),
+        'mailer' => array( 'Technical Support' => 'spawn-technicalsupport@drake-development.org' ),
         'user-management' => array(
             'user-states'=> array(   
                 'active'=> 'active-member',
@@ -22,6 +22,7 @@ return array(
             'zfcuser' => 'KryuuAccount\Controller\AccountController',
             'KryuuAccount\Account'=> 'KryuuAccount\Controller\AccountController',
             'KryuuAccount\Password' => 'KryuuAccount\Controller\PasswordController',
+            'KryuuAccount\status' => 'KryuuAccount\Controller\StatusController',
         ),
     ),
 
@@ -85,6 +86,19 @@ return array(
                                         'action' => 'change',
                                     ),
                                 ),
+                            ),
+                        ),
+                    ),
+                    'status' => array(
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => array(
+                            'route' => '/status[/:msg]',
+                            'constraints' => array(
+                                'msg' => '[a-zA-Z0-9_]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'KryuuAccount\status',
+                                'action' => 'status',
                             ),
                         ),
                     ),

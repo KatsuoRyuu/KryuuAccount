@@ -48,17 +48,28 @@ class StandardController extends EntityUsingController{
     
     const ROUTE_LOGOUT = "zfcuser/logout";
     const ROUTE_LOGIN  = "zfcuser/login";
+    const ROUTE_MAIL_SEND = "zfcuser/password/lost";
+    const ROUTE_STATUS = "zfcuser/status";
+        
+    const EVENT_PREFIX = 'kryuu.account.activation.';
     
-    private function sendMail($message){
+    const STATUS_MAIL_SEND_SUCCESS="status_mail_send_success";
+    const STATUS_MAIL_SEND_FAILED="status_mail_send_failed";
+    
+    public function sendMail($message){
         
         $mail = new Mail\Message();
         
         $parts = array();
         
-        $bodyMessage = new Mime\Part();
-        $bodyMessage->type = 'text/plain';
-        
-        $parts[] = $bodyMessage;
+        if (is_array($message->__get('message'))){
+            foreach ( $message->__get('message') as $mimetype => $messagepart ){
+                
+                $bodyMessage = new Mime\Part($messagepart);
+                $bodyMessage->type = $mimetype;
+                $parts[] = $bodyMessage;
+            }
+        }  
         
         if ($message->__get("file")->count() > 0){
             foreach ($message->__get("file") as $file) {
@@ -84,6 +95,9 @@ class StandardController extends EntityUsingController{
          * getting the from the sender.
          */
         $from = $message->__get('reply');
+        if ($from == null){
+            $from = array( $this->configService->get(array('mailTransport','default_sender_name'),true) => $this->configService->get(array('mailTransport','default_sender'),true) );
+        }
         $fromName = array_keys($from);
         $fromMail = array_values($from);
         
@@ -111,7 +125,7 @@ class StandardController extends EntityUsingController{
             ->setBody($bodyPart);
         // Setup SMTP transport using LOGIN authentication
         
-        $this->getMailTransport()->send($mail);
+        $this->configuration->getMailTransport()->send($mail);
         
     }
 }

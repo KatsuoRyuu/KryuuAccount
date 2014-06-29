@@ -78,7 +78,7 @@ class UserEditorServiceFactory implements FactoryInterface {
     public function createService(ServiceLocatorInterface $serviceLocator) {
         $this->serviceLocator = $serviceLocator;
         $this->config = $this->serviceLocator->get('KryuuAccount/Config');
-        $this->authService = $this->serviceLocator->get($this->config['auth_service']);
+        $this->authService = $this->serviceLocator->get($this->config->get(['auth_service']));
 
         return $this;
     }

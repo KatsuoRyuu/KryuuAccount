@@ -42,12 +42,47 @@ namespace KryuuAccount\Service;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Mail\Transport\Smtp as SmtpTransport;
+use Zend\Mail\Transport\SmtpOptions;
 
 /**
  * 
  */
 class ConfigServiceFactory implements FactoryInterface
 {
+
+	/**
+	 * @var EntityManager
+	 */
+	protected $entityManager;
+
+	/**
+	 * @var BaseNamespace
+	 */
+	protected $baseNamespace;
+
+	/**
+	 * @var configuration
+	 */
+	protected $configuration;
+
+	/**
+	 * @var MailTransport
+	 */
+	protected $transport;
+	
+    /**
+     *
+     * @var eventmanager 
+     */
+    protected $events;
+    
+    /**
+     * configuration array
+     * @var array 
+     */
+    protected $config=array();
+    
     /**
      * {@inheritDoc}
      *
@@ -55,8 +90,162 @@ class ConfigServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $config = $serviceLocator->get('Config');
+        $this->serviceLocator = $serviceLocator;
+        $this->setConfiguration();
 
-        return $config['KryuuAccount'];
+        return $this;
+    }	
+    
+	/**
+	* Sets the base namespace
+	*
+	* @param string $space
+	* @access protected
+	* @return PostController
+	*/
+	protected function setBaseNamespace($space)	{
+        
+        $space = explode('\\',$space);
+		$this->baseNamespace = $space[0];
+		return $this;
+	}
+	
+	/**
+	 * Returns the base namespace
+	 *
+	 * Fetches the string of the base Namespace ex. contact\controller 
+     * will return contact only
+	 *
+	 * @access protected
+     * @return String
+	 */
+	protected function getBaseNamespace() {
+        
+		if (null === $this->baseNamespace) {
+			$this->setBaseNamespace(__NAMESPACE__);
+		}
+        
+        return $this->baseNamespace;
+	}
+    
+	/**
+	* Sets the configuration for later easier access
+	*
+	* @access protected
+	* @return PostController
+	*/
+	protected function setConfiguration() {
+        $tmpConfig = $this->serviceLocator->get('config');
+        $this->configuration = $tmpConfig[$this->getBaseNamespace()];
+		return $this;
+	}    
+	
+	/**
+	 * Returns the configuration
+	 *
+	 * Fetches the string of the base configuration name ex
+     * array(
+     *      test => someconfig,
+     *      foo  => array(
+     *           foobar => barfoo,
+     *           ),
+     *      );
+     * 
+     * getConfiguration(test) returns string(someconfig)
+     * getConfiguration(foo)  returns array(foobar => barfoo)
+	 *
+     * @param String $searchString the name of the base configuration
+	 * @access protected
+     * @return String or array.
+	 */
+	protected function getConfiguration($searchString=null,$global=false)	{
+        
+		if (null === $this->configuration) {
+			$this->setConfiguration();
+		}
+        
+        if($global){
+            $tmp = $this->serviceLocator->get('config');
+            
+            if (is_array($searchString)){
+                return $this->getArrayParts($tmp,$searchString);
+            }
+            
+            return $tmp[$searchString];
+        }
+        
+        if($searchString==null){
+            $searchString = $this->getBaseNamespace();
+            return $this->configuration;
+        }
+        
+        if (is_array($searchString)){
+            return $this->getArrayParts($this->configuration,$searchString);
+        }
+        
+		return $this->configuration[$searchString];
+	}
+    
+    public function get($search=null,$global=false){
+        return $this->getConfiguration($search,$global);
+    }    
+    
+    protected function getArrayParts($config,$searchArray,$key=0){
+        $configTmp = $config[$searchArray[$key]];
+        if (is_array( $configTmp ) && count($searchArray) > $key+1){
+            return $this->getArrayParts($configTmp,$searchArray,$key+1);
+        }
+        return $configTmp;
     }
+    
+	/**
+	* Sets the configuration for later easier access
+	*
+	* @access protected
+	* @return PostController
+	*/
+	protected function setMailTransport() {
+
+        $config = $this->getConfiguration(array('mailTransport'),true);
+        
+        $this->transport = new SmtpTransport();
+        $options   = new SmtpOptions(array(
+            'name'              => $config['name'],
+            'host'              => $config['host'],
+            'connection_class'  => $config['connection_class'],
+            'connection_config' => array(
+                'username' => $config['connection_config']['username'],
+                'password' => $config['connection_config']['password'],
+            ),
+        ));
+        $this->transport->setOptions($options);
+        return $this->transport;
+	}
+	
+	/**
+	 * Returns the configuration
+	 *
+	 * Fetches the string of the base configuration name ex
+     * array(
+     *      test => someconfig,
+     *      foo  => array(
+     *           foobar => barfoo,
+     *           ),
+     *      );
+     * 
+     * getConfiguration(test) returns string(someconfig)
+     * getConfiguration(foo)  returns array(foobar => barfoo)
+	 *
+     * @param String $searchString the name of the base configuration
+	 * @access protected
+     * @return String or array.
+	 */
+	public function getMailTransport()	{
+        
+		if (null === $this->transport) {
+			$this->setMailTransport();
+		}
+		return $this->transport;
+	}
+    
 }

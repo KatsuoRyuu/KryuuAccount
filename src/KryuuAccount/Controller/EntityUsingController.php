@@ -59,7 +59,7 @@ class EntityUsingController extends zfcUserController
 	/**
 	* @var configuration
 	*/
-	protected $configuration;
+	protected $configuration=null;
 
 	/**
 	* @var MailTransport
@@ -71,6 +71,12 @@ class EntityUsingController extends zfcUserController
      * @var eventmanager 
      */
     protected $events;
+    
+    /**
+     *
+     * @var translator 
+     */
+    protected $translate;
     
     
 	/**
@@ -135,15 +141,16 @@ class EntityUsingController extends zfcUserController
         return $this->baseNamespace;
 	}
     
+    
 	/**
 	* Sets the configuration for later easier access
 	*
 	* @access protected
 	* @return PostController
 	*/
-	private function setConfiguration() {
-        $tmpConfig = $this->getServiceLocator()->get('config');
-        $this->configuration = $tmpConfig[$this->getBaseNamespace()]['config'];
+	protected function setConfiguration() {
+        $tmpConfig = $this->getServiceLocator()->get('KryuuAccount\Config');
+        $this->configuration = $tmpConfig;
 		return $this;
 	}
 	
@@ -165,19 +172,16 @@ class EntityUsingController extends zfcUserController
 	 * @access protected
      * @return String or array.
 	 */
-	protected function configuration($searchString,$global=false)	{
-        
-		if (null === $this->configuration) {
-			$this->setConfiguration();
-		}
-        
-        if($global){
-            $tmp = $this->getServiceLocator()->get('config');
-            return $tmp[$searchString];
+	protected function getConfiguration($searchString=null,$global=false){
+        if (!$this->configuration){
+            $this->setConfiguration();
         }
-        
-		return $this->configuration[$searchString];
+		return $this->configuration->get($searchString,$global);
 	}
+    
+    public function configuration($search=null,$global=false){
+        return $this->getConfiguration($search,$global);
+    }
     
     
     
@@ -193,7 +197,7 @@ class EntityUsingController extends zfcUserController
         
         $this->transport = new SmtpTransport();
         $options   = new SmtpOptions(array(
-            'name'              => ['name'],
+            'name'              => $config['name'],
             'host'              => $config['host'],
             'connection_class'  => $config['connection_class'],
             'connection_config' => array(

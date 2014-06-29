@@ -42,8 +42,7 @@ namespace KryuuAccount\Controller;
 
 use Zend\View\Model\ViewModel,
     KryuuAccount\Controller\StandardController,
-    KryuuAccount\InputFilter\Password,
-    KryuuAccount\Form\Password,
+    KryuuAccount\Form,
     KryuuAccount\Mail\Message;
 
 class PasswordController extends StandardController {
@@ -76,7 +75,7 @@ class PasswordController extends StandardController {
 	    		->getRepository('KryuuAccount\Entity\User')
 	    		->findOneBy(array('id' => $this->params()->fromRoute('id')));
 			
-			if ($user->getPasswordResetDate() == 0 && md5($user->getPasswordResetDate().$user->getId().$user->getPasswordResetDate()) != $this->params()->fromRoute('passwordCode'))
+			if ($user->getPasswordResetDate() == 0 && $this->genPasswordResetPassphrase($user) != $this->params()->fromRoute('passwordCode'))
 			{
 				$message = $this->translate('Password change request not valid, Please request a password change from the login screen.');
 				$viewModel->setTemplate('error.phtml');
@@ -127,7 +126,7 @@ class PasswordController extends StandardController {
         $viewModel = new ViewModel();
 		$message = '';
         
-        $form = new KryuuAccount\Form\Password\Lost();
+        $form = new Form\Password\Lost();
         
         $this->events()->trigger(__FUNCTION__.'.form', $this, array('form'=>$form));
         
@@ -138,8 +137,7 @@ class PasswordController extends StandardController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            
-        	$filter = new InputFilter\Lost();
+        	$filter = new Form\Password\LostFilter();
             $form->setInputFilter($filter->getInputFilter());
             $form->setData((array) $request->getPost());
 
@@ -151,8 +149,7 @@ class PasswordController extends StandardController {
                     ->findOneBy(array('email' => $data['email']));
 				if(!$user) {
                     
-					$message = $this->translate("We are sorry, but we can't find the email you requested a password renewal for.");
-                    $viewModel->setTemplate('error.phtml');
+                    return $this->redirect()->toRoute(static::ROUTE_STATUS,array('msg'=>static::STATUS_MAIL_SEND_FAILED));
 				} else {
                     
                     $message = new Message();
@@ -165,31 +162,41 @@ class PasswordController extends StandardController {
                     $template = new ViewModel();
                     $template->setTemplate('mail-template.phtml');
                     $template->setVariables(array(
-                        'fullname'      => $user->getFirstname().' '.$user->getLastname(),
+                        'fullname'      => $user->getUsername()!=null ? $user->getUsername() : $user->getEmail(),
                         'id'            => $user->getId(),
-                        'passphrase'    => md5($user->getPasswordResetDate().$user->getSerial().$user->getPasswordResetDate()),
+                        'passphrase'    => $this->genPasswordResetPassphrase($user),
                     ));
                     
-                    $content = $template->render();  
+                    $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+                    $content = $viewRender->render($template);
                           
-                    $message->__set(array('html' => $content, ),'message');
-                    $message->__add($user->getEmail(),'recievers');
+                    $message->__set(array('text/html' => $content, ),'message');
+                    $message->__set(array($user->getEmail()),'recievers');
                     
                     $this->sendMail($message);
                                         
-					$user->setPasswordResetDate(mktime(0, 0, 0, date("m") , date("d"),   date("Y")));
+					$user->setPasswordReset(time());
                     $this->entityManager()->persist($user);
 					$this->entityManager()->flush();
                     
-					$this->flashMessenger()->message( "Found you! an email is on the way." );
+					//$this->flashMessenger()->message( "Found you! an email is on the way." );
+                    return $this->redirect()->toRoute(static::ROUTE_STATUS,array('msg'=>static::STATUS_MAIL_SEND_SUCCESS));
 				}
             }
         }
         return array(
         	'form' 		=> $form,
-        	'message' 	=> $message
+        	'message' 	=> $message,
+            'route'=> static::ROUTE_MAIL_SEND,
 			);
 	}
     
-    
+    private function genPasswordResetPassphrase($user){
+        return md5(
+            $user->getPasswordReset().
+            $user->getId().
+            $user->getEmail().
+            $user->getPasswordReset()
+            );
+    }
 }

@@ -98,6 +98,13 @@ class User implements UserInterface, ProviderInterface{
     
     /**
      * 
+     * @var integer
+     * @ORM\Column(type="integer")
+     */
+    protected $passwordReset;
+    
+    /**
+     * 
      * @var int
      * @ORM\Column(type="integer")
      */
@@ -213,6 +220,26 @@ class User implements UserInterface, ProviderInterface{
      */
     public function setPassword($password){
         $this->password = $password;
+        return $this;
+    }
+    
+    /**
+     * Will get the reset integer from the passwordReset variable
+     * 
+     * @return type
+     */
+    public function getPasswordReset(){
+        return $this->passwordReset;
+    }
+
+    /**
+     * For setting the password Reset date.
+     * 
+     * @param type $password
+     * @return \KryuuAccount\Entity\User
+     */
+    public function setPasswordReset(){
+        $this->passwordReset = time();
         return $this;
     }
     
