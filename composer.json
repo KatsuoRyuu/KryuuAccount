@@ -1,0 +1,32 @@
+{
+    "name": "katsuo-ryuu/kryuu-account",
+    "description": "KryuuAccount module for ZF2 using doctrine2",
+    "type": "module",
+    "license": "Ryuu Technology License",
+    "keywords": [
+        "zf2"
+    ],
+    "homepage": "https://github.com/KatsuoRyuu/KRyuuAccountActivation",
+    "authors": [
+	{
+	    "name": "Anders Blenstrup-Pedersen",
+	    "email": "anders-github@drake-development.org",
+	    "homepage": "http://Ryuu.technology",
+	    "role": "Author"
+	}
+    ],
+    "require": {
+	"php": ">=5.3.3",
+	"zendframework/zendframework": "2.*",
+	"doctrine/doctrine-module" : "~0.7",
+	"doctrine/doctrine-orm-module" : "~0.7",
+	"zf-commons/zfc-user": "~0.1",
+	"bjyoungblood/bjy-authorize": "~1.1",
+	"zf-commons/zfc-user-doctrine-orm": "~0.1"
+    },
+    "autoload": {
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}
