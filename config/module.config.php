@@ -109,6 +109,7 @@ return array(
     
     'service_manager' => array(
         'factories' => array(
+            'KryuuAccount\UserInfoService' => 'KryuuAccount\Service\UserInfoServiceFactory',
             'kryuu_account_editor'       => 'KryuuAccount\Service\UserEditorServiceFactory',
             'KryuuAccount\Config'           => 'KryuuAccount\Service\ConfigServiceFactory',
         ),
