@@ -24,5 +24,7 @@ You can add a --force to the end to force the changes.
 Future
 -----
 
+Missing a trigger for when a user is deleted, so that all the extensions will react to it.
+Register will be moved to a seperate module, same will delete, edit functions of other modules, to combine this in a simple module.
 This Account system will almost replace ZfcUser and try to rebuild everything.
 The plan is to make it more secure and give it faster processing with more extentability. As for now it will work as an abstraction layer.
