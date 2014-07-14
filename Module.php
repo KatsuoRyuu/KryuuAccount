@@ -1,6 +1,9 @@
 <?php
 namespace KryuuAccount;
 
+use ZfcUser\Controller\Plugin\ZfcUserAuthentication as UserAuthentication;
+use KryuuAccount\Controller\Plugin\UserAccountData as UserData;
+
 class Module
 {
     public function getAutoloaderConfig()
@@ -20,6 +23,28 @@ class Module
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
+    }
+    
+    public function getControllerPluginConfig()
+    {
+        return array(
+            'factories' => array(
+                'userAccount' => function ($sm) {
+                    $serviceLocator = $sm->getServiceLocator();
+                    $authService = $serviceLocator->get('zfcuser_auth_service');
+                    $authAdapter = $serviceLocator->get('ZfcUser\Authentication\Adapter\AdapterChain');
+                    $controllerPlugin = new UserAuthentication;
+                    $controllerPlugin->setAuthService($authService);
+                    $controllerPlugin->setAuthAdapter($authAdapter);
+                    
+                    $userObject = new UserData();
+                    $userObject->setConfigService($serviceLocator);
+                    $userObject->loadMethods();
+                    
+                    return $userObject;
+                },
+            ),
+        );
     }
     
     public function getServiceConfig()

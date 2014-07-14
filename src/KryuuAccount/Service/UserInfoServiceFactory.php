@@ -123,17 +123,19 @@ class UserInfoServiceFactory implements FactoryInterface {
         return $this->identity->getUsername();
     }
     
-    public function getIdentity($userSearch){
+    public function getIdentity($userSearch=null){
+        $this->hasIdentity();
+        
         $user = false;
         
         if(!$user){
-            $user = $this->serviceLocator->get('Doctrine\ORM\EntityManager')->getRepository($this->config['user_entity'])->findOneBy(array('email'=>$userSearch));
+            $user = $this->serviceLocator->get('Doctrine\ORM\EntityManager')->getRepository($this->config->get('user_entity'))->findOneBy(array('email'=>$userSearch));
         } 
         if (!$user){
-            $user = $this->serviceLocator->get('Doctrine\ORM\EntityManager')->getRepository($this->config['user_entity'])->findOneBy(array('id'=>$userSearch));
+            $user = $this->serviceLocator->get('Doctrine\ORM\EntityManager')->getRepository($this->config->get('user_entity'))->findOneBy(array('id'=>$userSearch));
         }
         if(!$user){
-            $user = $this->serviceLocator->get('Doctrine\ORM\EntityManager')->getRepository($this->config['user_entity'])->findOneBy(array('username'=>$userSearch));
+            $user = $this->serviceLocator->get('Doctrine\ORM\EntityManager')->getRepository($this->config->get('user_entity'))->findOneBy(array('username'=>$userSearch));
         } 
         if(!$user){
             throw new Zend\ServiceManager\Exception('Unable to find the user!');
