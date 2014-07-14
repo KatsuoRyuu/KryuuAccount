@@ -48,11 +48,10 @@ use ZfcUser\Authentication\Adapter\AdapterChain as AuthAdapter;
 class UserAccountData extends AbstractPlugin{
     
     
+    
     /**
      * PLEASE NOTE.
-     * This class as seen is not complete and will be extended by it function
-     * load_methods
-     * load_data
+     * This class as seen is not complete and will be extended with new functions on the fly
      */
     
     
