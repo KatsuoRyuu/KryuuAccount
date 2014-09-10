@@ -52,6 +52,8 @@ class AccountController extends StandardController {
             return $this->redirect()->toRoute(static::ROUTE_LOGIN);
         }
         
+        var_dump($this->UserAccount()->getAddress());
+        
     }
 
     /**

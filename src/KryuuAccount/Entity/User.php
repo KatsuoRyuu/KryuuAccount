@@ -53,6 +53,8 @@ use BjyAuthorize\Provider\Role\ProviderInterface,
 
 
 /**
+ * @Annotation\Name("User")
+ * @Annotation\Hydrator("Zend\Stdlib\Hydrator\ObjectProperty")
  * 
  * @ORM\Entity
  * @ORM\Table(name="kryuu_account_user")
@@ -61,6 +63,8 @@ use BjyAuthorize\Provider\Role\ProviderInterface,
 class User implements UserInterface, ProviderInterface{
     
     /**
+     * @Annotation\Exclude()
+     * 
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -69,6 +73,14 @@ class User implements UserInterface, ProviderInterface{
     protected $id;
     
     /**
+     * @Annotation\Type("Zend\Form\Element\text")
+     * @Annotation\Flags({"priority": 600})
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StringTrim"})
+     * @ Annotation\Validator({"name":"StringLength"})
+     * @Annotation\Options({"label":"About:"})
+     * @Annotation\Attributes({"options":{"1":"PlaceHolder","2":"Test"}})
+     * 
      * 
      * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
