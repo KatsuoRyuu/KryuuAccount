@@ -42,27 +42,17 @@ namespace KryuuAccount;
 
 
 
-return array(
+return array(    
     'default' => array(
         array(
-            'label' => 'Blog',
-            'route' => 'KryuuBlog',
+            'label' => 'Account',
+            'route' => 'zfcuser',
             'pages' => array(
                 array(
-                    'label' => 'Add Blog',
-                    'route' => 'KryuuBlog',
+                    'label' => 'Profile',
+                    'route' => 'zfcuser',
                 ),
             ),
-        ),
-    ),
-    'KryuuBlog' => array(
-        array(
-            'label' => 'Add blog post',
-            'route' => 'KryuuBlog/add',
-        ),
-        array(
-            'label' => 'List blog posts',
-            'route' => 'KryuuBlog/list',
         ),
     ),
 );
