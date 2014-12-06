@@ -1,8 +1,8 @@
 User Account system
 =====
-[![Latest Stable Version](https://poser.pugx.org/katsuo-ryuu/kryuu-language-selector/v/stable.svg)](https://packagist.org/packages/katsuo-ryuu/kryuu-language-selector) 
-[![Latest Unstable Version](https://poser.pugx.org/katsuo-ryuu/kryuu-language-selector/v/unstable.svg)](https://packagist.org/packages/katsuo-ryuu/kryuu-language-selector) 
-[![License](https://poser.pugx.org/katsuo-ryuu/kryuu-language-selector/license.svg)](https://packagist.org/packages/katsuo-ryuu/kryuu-language-selector)
+[![Latest Stable Version](https://poser.pugx.org/katsuo-ryuu/kryuu-account/v/stable.svg)](https://packagist.org/packages/katsuo-ryuu/kryuu-account) 
+[![Latest Unstable Version](https://poser.pugx.org/katsuo-ryuu/kryuu-account/v/unstable.svg)](https://packagist.org/packages/katsuo-ryuu/kryuu-account) 
+[![License](https://poser.pugx.org/katsuo-ryuu/kryuu-account/license.svg)](https://packagist.org/packages/katsuo-ryuu/kryuu-account)
 
 About
 -----
