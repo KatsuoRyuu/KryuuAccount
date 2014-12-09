@@ -21,6 +21,15 @@ return array(
                 'neutral'=>'user',
             ),
         ),
+        'user_service'  => 'KryuuAccount\UserInfoService',
+        'user_data_methods' => array(
+            'getId' => array(
+                'service'   => 'KryuuAccount\UserInfoService',
+                'name'      => 'getId',
+                'function'  => 'getId',
+                'args'      => '',
+            ),
+        ),
         'auth_service'  => 'zfcuser_auth_service',
         'user_entity'   => 'KryuuAccount\Entity\User',
         'role_entity'   => 'KryuuAccount\Entity\Role',

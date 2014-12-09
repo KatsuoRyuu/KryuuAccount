@@ -115,6 +115,14 @@ class UserInfoServiceFactory implements FactoryInterface {
         return $this->identity->getRole();
     }
     
+    public function getId($userSearch){
+        $this->getIdentity($userSearch);
+        if (!$this->hasIdentity()){
+            return false;
+        }
+        return $this->identity->getId();
+    }
+    
     public function getUsername($userSearch){
         $this->getIdentity($userSearch);
         if (!$this->hasIdentity()){
@@ -138,7 +146,7 @@ class UserInfoServiceFactory implements FactoryInterface {
             $user = $this->serviceLocator->get('Doctrine\ORM\EntityManager')->getRepository($this->config->get('user_entity'))->findOneBy(array('username'=>$userSearch));
         } 
         if(!$user){
-            throw new Zend\ServiceManager\Exception('Unable to find the user!');
+            return FALSE;
         }
         
         $this->identity = $user;
